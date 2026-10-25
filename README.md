@@ -1,21 +1,29 @@
-# N-gram Music Completion
+# Melodies as language
 
-A statistical language-modeling project that treats musical notes as tokens and completes short symbolic sequences. It compares **unigram, bigram and trigram models**, smoothing choices and perplexity on a small course music corpus.
+**Persian melodies read as language.** Notes become tokens, and n-gram models try to finish the phrase: a small experiment in where counting stops being enough.
 
-**Python · pandas · NumPy · n-gram language models**
+*Python · NumPy · n-gram language models* · [Report in Persian](docs/report-fa.pdf)
 
-## What it explores
+## What I did
 
-- Tokenization of note sequences, including a mode that ignores accidentals.
-- N-gram probability estimates with Lidstone smoothing.
-- Smoothing-parameter selection using leave-one-out cross-validation.
-- Sequence completion and perplexity comparisons.
+- Worked with a course corpus of 41 Persian songs as note sequences, each tagged with its dastgah (shur, mahur and others).
+- Implemented unigram, bigram and trigram models with Lidstone smoothing, with and without accidentals.
+- Tuned the smoothing by leave-one-out cross-validation over all 41 songs, and compared Laplace and Jeffreys–Perks smoothing.
+- Completed five melody openings with every model and scored them by perplexity.
 
-The output is a sequence of note tokens, rather than a synthesized audio file.
+## What I found
 
-## Run
+| Model | Best α (leave-one-out) | Mean perplexity |
+| --- | ---: | ---: |
+| Unigram | 5.0 | 11.03 |
+| Bigram | 1.0 | 8.45 |
+| Trigram | 0.7 | 9.29 |
 
-The original `music.csv` is included beside the script, at the path expected by the entry point:
+- **Context helps, up to a point.** Bigrams beat unigrams on unseen songs, but trigrams fall back: 41 songs are too few to see most three-note contexts.
+- **The likeliest note isn't music.** Greedy completion repeats the commonest note (C C C C…) or falls into loops (C D C D…).
+- **Perplexity isn't the whole story.** The report suggests judging a continuation by whether it stays in the song's dastgah.
+
+## Try it
 
 ```powershell
 python -m venv .venv
@@ -23,14 +31,14 @@ python -m venv .venv
 .\.venv\Scripts\python.exe ngram_music.py
 ```
 
-The program prints the two experiment variants, completed sequences and comparison values. The [original Persian report](docs/report-fa.pdf) contains saved examples and result tables that can be read without running the code.
+It prints both experiment variants, the completed sequences and their perplexities. The output is note tokens, not audio.
 
-## Files and context
+## Layout
 
-| Path | Purpose |
+| Path | What's there |
 | --- | --- |
-| [`ngram_music.py`](ngram_music.py) | Model, preprocessing, parameter search and experiment entry point |
-| [`music.csv`](music.csv) | Small course note-sequence corpus |
-| [`docs/report-fa.pdf`](docs/report-fa.pdf) | Original explanation and recorded results |
+| [`ngram_music.py`](ngram_music.py) | Models, smoothing search and experiments |
+| [`music.csv`](music.csv) | The 41-song corpus |
+| [`docs/report-fa.pdf`](docs/report-fa.pdf) | Method, results and analysis, in Persian |
 
-Developed for natural-language-processing coursework at the University of Isfahan. This project connects statistical NLP with a personal interest in music.
+Natural language processing course project, University of Isfahan, 2026.
